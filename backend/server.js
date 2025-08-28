@@ -110,10 +110,74 @@ app.get('/api/interview/status', (req, res) => {
   }
 });
 
+// Enhanced Tone Analysis Endpoints
+app.get('/api/interview/tone-analysis', (req, res) => {
+  try {
+    const toneAnalysis = interviewService.microphoneProcessor.getDetailedToneAnalysis();
+    res.json({ 
+      success: true, 
+      toneAnalysis: toneAnalysis
+    });
+  } catch (error) {
+    console.error('Get tone analysis error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/interview/strength-analysis', (req, res) => {
+  try {
+    const strengthAnalysis = interviewService.microphoneProcessor.getDetailedStrengthAnalysis();
+    res.json({ 
+      success: true, 
+      strengthAnalysis: strengthAnalysis
+    });
+  } catch (error) {
+    console.error('Get strength analysis error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/interview/hesitation-analysis', (req, res) => {
+  try {
+    const hesitationAnalysis = interviewService.microphoneProcessor.getDetailedHesitationAnalysis();
+    res.json({ 
+      success: true, 
+      hesitationAnalysis: hesitationAnalysis
+    });
+  } catch (error) {
+    console.error('Get hesitation analysis error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.get('/api/interview/comprehensive-analysis', (req, res) => {
+  try {
+    const comprehensiveAnalysis = {
+      tone: interviewService.microphoneProcessor.getDetailedToneAnalysis(),
+      strength: interviewService.microphoneProcessor.getDetailedStrengthAnalysis(),
+      hesitation: interviewService.microphoneProcessor.getDetailedHesitationAnalysis(),
+      summary: interviewService.microphoneProcessor.getSpeakingSummary(),
+      timestamp: new Date().toISOString()
+    };
+    
+    res.json({ 
+      success: true, 
+      comprehensiveAnalysis: comprehensiveAnalysis
+    });
+  } catch (error) {
+    console.error('Get comprehensive analysis error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Interview Analysis Backend Server running on port ${PORT}`);
   console.log(`📊 Health Check: http://localhost:${PORT}/api/health`);
   console.log(`🎥 Interview Analysis: http://localhost:${PORT}/api/interview/*`);
+  console.log(`🎵 Enhanced Tone Analysis: http://localhost:${PORT}/api/interview/tone-analysis`);
+  console.log(`💪 Vocal Strength Analysis: http://localhost:${PORT}/api/interview/strength-analysis`);
+  console.log(`⏸️  Hesitation Pattern Analysis: http://localhost:${PORT}/api/interview/hesitation-analysis`);
+  console.log(`📈 Comprehensive Analysis: http://localhost:${PORT}/api/interview/comprehensive-analysis`);
 });
 
 process.on('SIGINT', () => {

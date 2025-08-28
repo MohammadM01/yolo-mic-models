@@ -47,7 +47,26 @@ class MicrophoneProcessor {
           pitch: this.generateRealisticPitch(),
           volume: this.generateRealisticVolume(),
           clarity: this.generateRealisticClarity(),
-          stability: this.generateRealisticStability()
+          stability: this.generateRealisticStability(),
+          // Enhanced tone analysis
+          warmth: this.generateRealisticToneWarmth(),
+          authority: this.generateRealisticToneAuthority(),
+          enthusiasm: this.generateRealisticToneEnthusiasm(),
+          confidence: this.generateRealisticToneConfidence()
+        },
+        strength: {
+          vocalPower: this.generateRealisticVocalPower(),
+          projection: this.generateRealisticProjection(),
+          resonance: this.generateRealisticResonance(),
+          breathControl: this.generateRealisticBreathControl(),
+          stamina: this.generateRealisticVocalStamina()
+        },
+        hesitationPatterns: {
+          frequency: this.generateRealisticHesitationFrequency(),
+          duration: this.generateRealisticHesitationDuration(),
+          recovery: this.generateRealisticHesitationRecovery(),
+          types: this.generateRealisticHesitationTypes(),
+          context: this.generateRealisticHesitationContext()
         },
         fluency: {
           pace: this.generateRealisticPace(),
@@ -70,15 +89,30 @@ class MicrophoneProcessor {
         timestamp: Date.now()
       };
 
-      // Calculate overall speaking score
-      const toneScore = (metrics.tone.pitch + metrics.tone.volume + metrics.tone.clarity + metrics.tone.stability) / 4;
+      // Calculate overall speaking score with enhanced metrics
+      const toneScore = (metrics.tone.pitch + metrics.tone.volume + metrics.tone.clarity + metrics.tone.stability + 
+                        metrics.tone.warmth + metrics.tone.authority + metrics.tone.enthusiasm + metrics.tone.confidence) / 8;
+      
+      const strengthScore = (metrics.strength.vocalPower + metrics.strength.projection + metrics.strength.resonance + 
+                           metrics.strength.breathControl + metrics.strength.stamina) / 5;
+      
+      const hesitationScore = Math.max(0, 1 - (metrics.hesitationPatterns.frequency * 0.3 + metrics.hesitationPatterns.duration * 0.2));
+      
       const fluencyScore = (metrics.fluency.pace + metrics.fluency.rhythm + metrics.fluency.flow) / 3;
       const articulationScore = (metrics.articulation.pronunciation + metrics.articulation.enunciation + metrics.articulation.speed) / 3;
       
       // Penalize for filler words
       const fillerPenalty = Math.min(0.2, (metrics.fillerWords.umCount + metrics.fillerWords.uhCount + metrics.fillerWords.likeCount) * 0.02);
       
-      metrics.score = Math.max(0, (toneScore + fluencyScore + articulationScore) / 3 - fillerPenalty);
+      // Weighted scoring: tone (25%), strength (25%), hesitation (20%), fluency (15%), articulation (15%)
+      metrics.score = Math.max(0, 
+        (toneScore * 0.25) + 
+        (strengthScore * 0.25) + 
+        (hesitationScore * 0.20) + 
+        (fluencyScore * 0.15) + 
+        (articulationScore * 0.15) - 
+        fillerPenalty
+      );
       
       // Store analysis result
       this.analysisResults.push(metrics);
@@ -196,6 +230,147 @@ class MicrophoneProcessor {
     return Math.max(0, Math.min(1, baseSpeed + variation));
   }
 
+  // Enhanced Tone Analysis Generators
+  
+  // Generate realistic tone warmth (0.0 to 1.0)
+  generateRealisticToneWarmth() {
+    const baseWarmth = 0.5 + Math.random() * 0.4; // Base warmth between 0.5-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, baseWarmth + variation));
+  }
+
+  // Generate realistic tone authority (0.0 to 1.0)
+  generateRealisticToneAuthority() {
+    const baseAuthority = 0.4 + Math.random() * 0.5; // Base authority between 0.4-0.9
+    const variation = (Math.random() - 0.5) * 0.25; // ±0.125 variation
+    return Math.max(0, Math.min(1, baseAuthority + variation));
+  }
+
+  // Generate realistic tone enthusiasm (0.0 to 1.0)
+  generateRealisticToneEnthusiasm() {
+    const baseEnthusiasm = 0.3 + Math.random() * 0.6; // Base enthusiasm between 0.3-0.9
+    const variation = (Math.random() - 0.5) * 0.3; // ±0.15 variation
+    return Math.max(0, Math.min(1, baseEnthusiasm + variation));
+  }
+
+  // Generate realistic tone confidence (0.0 to 1.0)
+  generateRealisticToneConfidence() {
+    const baseConfidence = 0.5 + Math.random() * 0.4; // Base confidence between 0.5-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, baseConfidence + variation));
+  }
+
+  // Vocal Strength Generators
+  
+  // Generate realistic vocal power (0.0 to 1.0)
+  generateRealisticVocalPower() {
+    const basePower = 0.6 + Math.random() * 0.3; // Base power between 0.6-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, basePower + variation));
+  }
+
+  // Generate realistic vocal projection (0.0 to 1.0)
+  generateRealisticProjection() {
+    const baseProjection = 0.5 + Math.random() * 0.4; // Base projection between 0.5-0.9
+    const variation = (Math.random() - 0.5) * 0.25; // ±0.125 variation
+    return Math.max(0, Math.min(1, baseProjection + variation));
+  }
+
+  // Generate realistic vocal resonance (0.0 to 1.0)
+  generateRealisticResonance() {
+    const baseResonance = 0.4 + Math.random() * 0.5; // Base resonance between 0.4-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, baseResonance + variation));
+  }
+
+  // Generate realistic breath control (0.0 to 1.0)
+  generateRealisticBreathControl() {
+    const baseBreathControl = 0.5 + Math.random() * 0.4; // Base breath control between 0.5-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, baseBreathControl + variation));
+  }
+
+  // Generate realistic vocal stamina (0.0 to 1.0)
+  generateRealisticVocalStamina() {
+    const baseStamina = 0.6 + Math.random() * 0.3; // Base stamina between 0.6-0.9
+    const variation = (Math.random() - 0.5) * 0.2; // ±0.1 variation
+    return Math.max(0, Math.min(1, baseStamina + variation));
+  }
+
+  // Hesitation Pattern Generators
+  
+  // Generate realistic hesitation frequency (0.0 to 1.0, lower is better)
+  generateRealisticHesitationFrequency() {
+    // 70% chance of low hesitation (good speakers)
+    if (Math.random() < 0.7) {
+      return 0.1 + Math.random() * 0.2; // 0.1-0.3 (low hesitation)
+    }
+    // 20% chance of medium hesitation
+    else if (Math.random() < 0.9) {
+      return 0.3 + Math.random() * 0.3; // 0.3-0.6 (medium hesitation)
+    }
+    // 10% chance of high hesitation
+    else {
+      return 0.6 + Math.random() * 0.4; // 0.6-1.0 (high hesitation)
+    }
+  }
+
+  // Generate realistic hesitation duration (0.0 to 1.0, lower is better)
+  generateRealisticHesitationDuration() {
+    // 80% chance of short hesitations
+    if (Math.random() < 0.8) {
+      return 0.1 + Math.random() * 0.3; // 0.1-0.4 (short hesitations)
+    }
+    // 20% chance of longer hesitations
+    else {
+      return 0.4 + Math.random() * 0.6; // 0.4-1.0 (longer hesitations)
+    }
+  }
+
+  // Generate realistic hesitation recovery (0.0 to 1.0, higher is better)
+  generateRealisticHesitationRecovery() {
+    // 75% chance of good recovery
+    if (Math.random() < 0.75) {
+      return 0.6 + Math.random() * 0.4; // 0.6-1.0 (good recovery)
+    }
+    // 25% chance of poor recovery
+    else {
+      return 0.2 + Math.random() * 0.4; // 0.2-0.6 (poor recovery)
+    }
+  }
+
+  // Generate realistic hesitation types
+  generateRealisticHesitationTypes() {
+    const types = ['pause', 'filler', 'repetition', 'correction', 'thinking'];
+    const selectedTypes = [];
+    
+    // Randomly select 1-3 hesitation types
+    const numTypes = Math.floor(Math.random() * 3) + 1;
+    const shuffled = types.sort(() => 0.5 - Math.random());
+    
+    for (let i = 0; i < numTypes; i++) {
+      selectedTypes.push(shuffled[i]);
+    }
+    
+    return selectedTypes;
+  }
+
+  // Generate realistic hesitation context
+  generateRealisticHesitationContext() {
+    const contexts = ['transition', 'complex-idea', 'memory-recall', 'emotion', 'technical-term'];
+    const selectedContexts = [];
+    
+    // Randomly select 1-2 contexts
+    const numContexts = Math.floor(Math.random() * 2) + 1;
+    const shuffled = contexts.sort(() => 0.5 - Math.random());
+    
+    for (let i = 0; i < numContexts; i++) {
+      selectedContexts.push(shuffled[i]);
+    }
+    
+    return selectedContexts;
+  }
+
   // Get recent analysis results
   getRecentResults(limit = 10) {
     return this.analysisResults.slice(-limit);
@@ -210,8 +385,20 @@ class MicrophoneProcessor {
     const recentResults = this.analysisResults.slice(-5); // Last 5 results
     const avgScore = recentResults.reduce((sum, result) => sum + result.score, 0) / recentResults.length;
     
+    // Enhanced tone analysis (including new metrics)
     const avgTone = recentResults.reduce((sum, result) => 
-      sum + (result.tone.pitch + result.tone.volume + result.tone.clarity + result.tone.stability) / 4, 0) / recentResults.length;
+      sum + (result.tone.pitch + result.tone.volume + result.tone.clarity + result.tone.stability + 
+             result.tone.warmth + result.tone.authority + result.tone.enthusiasm + result.tone.confidence) / 8, 0) / recentResults.length;
+    
+    // Vocal strength analysis
+    const avgStrength = recentResults.reduce((sum, result) => 
+      sum + (result.strength.vocalPower + result.strength.projection + result.strength.resonance + 
+             result.strength.breathControl + result.strength.stamina) / 5, 0) / recentResults.length;
+    
+    // Hesitation pattern analysis (lower is better, so we invert the score)
+    const avgHesitation = recentResults.reduce((sum, result) => 
+      sum + (1 - (result.hesitationPatterns.frequency * 0.4 + result.hesitationPatterns.duration * 0.3 + 
+                  (1 - result.hesitationPatterns.recovery) * 0.3)), 0) / recentResults.length;
     
     const avgFluency = recentResults.reduce((sum, result) => 
       sum + (result.fluency.pace + result.fluency.rhythm + result.fluency.flow) / 3, 0) / recentResults.length;
@@ -222,15 +409,212 @@ class MicrophoneProcessor {
     const totalFillers = recentResults.reduce((sum, result) => 
       sum + result.fillerWords.umCount + result.fillerWords.uhCount + result.fillerWords.likeCount, 0);
 
+    // Get most common hesitation types
+    const hesitationTypes = {};
+    recentResults.forEach(result => {
+      result.hesitationPatterns.types.forEach(type => {
+        hesitationTypes[type] = (hesitationTypes[type] || 0) + 1;
+      });
+    });
+
+    // Get most common hesitation contexts
+    const hesitationContexts = {};
+    recentResults.forEach(result => {
+      result.hesitationPatterns.context.forEach(context => {
+        hesitationContexts[context] = (hesitationContexts[context] || 0) + 1;
+      });
+    });
+
     return {
       averageScore: avgScore,
       averageTone: avgTone,
+      averageStrength: avgStrength,
+      averageHesitation: avgHesitation,
       averageFluency: avgFluency,
       averageArticulation: avgArticulation,
       totalFillerWords: totalFillers,
+      mostCommonHesitationTypes: hesitationTypes,
+      mostCommonHesitationContexts: hesitationContexts,
       samplesAnalyzed: this.analysisResults.length,
       timestamp: new Date().toISOString()
     };
+  }
+
+  // Get detailed tone analysis
+  getDetailedToneAnalysis() {
+    if (this.analysisResults.length === 0) {
+      return { message: 'No tone analysis data available' };
+    }
+
+    const recentResults = this.analysisResults.slice(-10); // Last 10 results
+    
+    const toneBreakdown = {
+      pitch: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.pitch, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.pitch))
+      },
+      volume: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.volume, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.volume))
+      },
+      clarity: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.clarity, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.clarity))
+      },
+      stability: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.stability, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.stability))
+      },
+      warmth: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.warmth, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.warmth))
+      },
+      authority: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.authority, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.authority))
+      },
+      enthusiasm: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.enthusiasm, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.enthusiasm))
+      },
+      confidence: {
+        average: recentResults.reduce((sum, result) => sum + result.tone.confidence, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.tone.confidence))
+      }
+    };
+
+    return {
+      toneBreakdown,
+      overallToneScore: Object.values(toneBreakdown).reduce((sum, metric) => sum + metric.average, 0) / Object.keys(toneBreakdown).length,
+      samplesAnalyzed: recentResults.length,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // Get detailed strength analysis
+  getDetailedStrengthAnalysis() {
+    if (this.analysisResults.length === 0) {
+      return { message: 'No strength analysis data available' };
+    }
+
+    const recentResults = this.analysisResults.slice(-10); // Last 10 results
+    
+    const strengthBreakdown = {
+      vocalPower: {
+        average: recentResults.reduce((sum, result) => sum + result.strength.vocalPower, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.strength.vocalPower))
+      },
+      projection: {
+        average: recentResults.reduce((sum, result) => sum + result.strength.projection, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.strength.projection))
+      },
+      resonance: {
+        average: recentResults.reduce((sum, result) => sum + result.strength.resonance, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.strength.resonance))
+      },
+      breathControl: {
+        average: recentResults.reduce((sum, result) => sum + result.strength.breathControl, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.strength.breathControl))
+      },
+      stamina: {
+        average: recentResults.reduce((sum, result) => sum + result.strength.stamina, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.strength.stamina))
+      }
+    };
+
+    return {
+      strengthBreakdown,
+      overallStrengthScore: Object.values(strengthBreakdown).reduce((sum, metric) => sum + metric.average, 0) / Object.keys(strengthBreakdown).length,
+      samplesAnalyzed: recentResults.length,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // Get detailed hesitation analysis
+  getDetailedHesitationAnalysis() {
+    if (this.analysisResults.length === 0) {
+      return { message: 'No hesitation analysis data available' };
+    }
+
+    const recentResults = this.analysisResults.slice(-10); // Last 10 results
+    
+    const hesitationBreakdown = {
+      frequency: {
+        average: recentResults.reduce((sum, result) => sum + result.hesitationPatterns.frequency, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.hesitationPatterns.frequency)),
+        interpretation: this.interpretHesitationFrequency(recentResults.reduce((sum, result) => sum + result.hesitationPatterns.frequency, 0) / recentResults.length)
+      },
+      duration: {
+        average: recentResults.reduce((sum, result) => sum + result.hesitationPatterns.duration, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.hesitationPatterns.duration)),
+        interpretation: this.interpretHesitationDuration(recentResults.reduce((sum, result) => sum + result.hesitationPatterns.duration, 0) / recentResults.length)
+      },
+      recovery: {
+        average: recentResults.reduce((sum, result) => sum + result.hesitationPatterns.recovery, 0) / recentResults.length,
+        trend: this.calculateTrend(recentResults.map(r => r.hesitationPatterns.recovery)),
+        interpretation: this.interpretHesitationRecovery(recentResults.reduce((sum, result) => sum + result.hesitationPatterns.recovery, 0) / recentResults.length)
+      }
+    };
+
+    // Aggregate hesitation types and contexts
+    const allHesitationTypes = {};
+    const allHesitationContexts = {};
+    
+    recentResults.forEach(result => {
+      result.hesitationPatterns.types.forEach(type => {
+        allHesitationTypes[type] = (allHesitationTypes[type] || 0) + 1;
+      });
+      result.hesitationPatterns.context.forEach(context => {
+        allHesitationContexts[context] = (allHesitationContexts[context] || 0) + 1;
+      });
+    });
+
+    return {
+      hesitationBreakdown,
+      hesitationTypes: allHesitationTypes,
+      hesitationContexts: allHesitationContexts,
+      overallHesitationScore: 1 - (hesitationBreakdown.frequency.average * 0.4 + hesitationBreakdown.duration.average * 0.3 + (1 - hesitationBreakdown.recovery.average) * 0.3),
+      samplesAnalyzed: recentResults.length,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  // Helper method to calculate trend (positive, negative, or stable)
+  calculateTrend(values) {
+    if (values.length < 2) return 'insufficient-data';
+    
+    const firstHalf = values.slice(0, Math.floor(values.length / 2));
+    const secondHalf = values.slice(Math.floor(values.length / 2));
+    
+    const firstAvg = firstHalf.reduce((sum, val) => sum + val, 0) / firstHalf.length;
+    const secondAvg = secondHalf.reduce((sum, val) => sum + val, 0) / secondHalf.length;
+    
+    const difference = secondAvg - firstAvg;
+    
+    if (Math.abs(difference) < 0.05) return 'stable';
+    return difference > 0 ? 'improving' : 'declining';
+  }
+
+  // Helper methods to interpret hesitation metrics
+  interpretHesitationFrequency(frequency) {
+    if (frequency < 0.2) return 'excellent';
+    if (frequency < 0.4) return 'good';
+    if (frequency < 0.6) return 'fair';
+    return 'needs-improvement';
+  }
+
+  interpretHesitationDuration(duration) {
+    if (duration < 0.2) return 'excellent';
+    if (duration < 0.4) return 'good';
+    if (duration < 0.6) return 'fair';
+    return 'needs-improvement';
+  }
+
+  interpretHesitationRecovery(recovery) {
+    if (recovery > 0.8) return 'excellent';
+    if (recovery > 0.6) return 'good';
+    if (recovery > 0.4) return 'fair';
+    return 'needs-improvement';
   }
 
   // Cleanup resources
