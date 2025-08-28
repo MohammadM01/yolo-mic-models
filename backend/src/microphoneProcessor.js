@@ -155,15 +155,21 @@ class MicrophoneProcessor {
 
   // Generate realistic filler word counts
   generateRealisticFillerCount(type) {
+    // 80% chance of having no filler words (natural speech)
+    if (Math.random() < 0.8) {
+      return 0;
+    }
+    
+    // 20% chance of having some filler words
     switch (type) {
       case 'um':
-        return Math.floor(Math.random() * 4); // 0-3 ums
+        return Math.floor(Math.random() * 2) + 1; // 1-2 ums (when present)
       case 'uh':
-        return Math.floor(Math.random() * 3); // 0-2 uhs
+        return Math.floor(Math.random() * 2) + 1; // 1-2 uhs (when present)
       case 'like':
-        return Math.floor(Math.random() * 5); // 0-4 likes
+        return Math.floor(Math.random() * 2) + 1; // 1-2 likes (when present)
       case 'you know':
-        return Math.floor(Math.random() * 3); // 0-2 you knows
+        return Math.floor(Math.random() * 2) + 1; // 1-2 you knows (when present)
       default:
         return 0;
     }

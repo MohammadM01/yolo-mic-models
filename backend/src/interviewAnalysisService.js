@@ -141,7 +141,7 @@ class InterviewAnalysisService {
       const eyeContact = await this.visionProcessor.detectEyeContact(null);
       this.currentCycleData.eyeContactData.push(eyeContact.hasEyeContact);
       
-    }, 1000); // Collect data every second
+    }, 10000); // Collect data every 10 seconds (more realistic)
   }
 
   completeCycle() {
