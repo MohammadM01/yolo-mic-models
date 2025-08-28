@@ -377,9 +377,87 @@ const InterviewAnalysis = () => {
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Filler Words Section */}
+                  {cycle.summary.fillerWords && cycle.summary.fillerWords.total > 0 && (
+                    <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <h4 className="font-semibold text-yellow-800 mb-2">🗣️ Filler Words Detected</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                          <span className="font-medium text-yellow-700">Total:</span>
+                          <div className="text-yellow-600 font-bold">{cycle.summary.fillerWords.total}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium text-yellow-700">Um:</span>
+                          <div className="text-yellow-600">{cycle.summary.fillerWords.breakdown.um}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium text-yellow-700">Uh:</span>
+                          <div className="text-yellow-600">{cycle.summary.fillerWords.breakdown.uh}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium text-yellow-700">Like:</span>
+                          <div className="text-yellow-600">{cycle.summary.fillerWords.breakdown.like}</div>
+                        </div>
+                        <div>
+                          <span className="font-medium text-yellow-700">You Know:</span>
+                          <div className="text-yellow-600">{cycle.summary.fillerWords.breakdown.youKnow}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Filler Words Summary */}
+        {cycleResults.length > 0 && (
+          <div className="bg-yellow-100 rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-2xl font-semibold mb-4 text-yellow-800">
+              🗣️ Filler Words Summary
+            </h2>
+            
+            {(() => {
+              const totalFillerWords = cycleResults.reduce((total, cycle) => 
+                total + (cycle.summary.fillerWords?.total || 0), 0);
+              
+              const fillerBreakdown = cycleResults.reduce((acc, cycle) => {
+                if (cycle.summary.fillerWords?.breakdown) {
+                  acc.um += cycle.summary.fillerWords.breakdown.um || 0;
+                  acc.uh += cycle.summary.fillerWords.breakdown.uh || 0;
+                  acc.like += cycle.summary.fillerWords.breakdown.like || 0;
+                  acc.youKnow += cycle.summary.fillerWords.breakdown.youKnow || 0;
+                }
+                return acc;
+              }, { um: 0, uh: 0, like: 0, youKnow: 0 });
+              
+              return (
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-yellow-600">{totalFillerWords}</div>
+                    <div className="text-sm text-yellow-700">Total Filler Words</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{fillerBreakdown.um}</div>
+                    <div className="text-sm text-yellow-700">Um</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{fillerBreakdown.uh}</div>
+                    <div className="text-sm text-yellow-700">Uh</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{fillerBreakdown.like}</div>
+                    <div className="text-sm text-yellow-700">Like</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{fillerBreakdown.youKnow}</div>
+                    <div className="text-sm text-yellow-700">You Know</div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
 

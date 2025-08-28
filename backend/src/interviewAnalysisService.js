@@ -134,6 +134,7 @@ class InterviewAnalysisService {
       
       // Collect speaking metrics using microphone processor
       const speakingMetric = await this.microphoneProcessor.analyzeSpeakingSkills();
+      console.log('🎤 Speaking metric collected:', JSON.stringify(speakingMetric, null, 2));
       this.currentCycleData.speakingMetrics.push(speakingMetric);
       
       // Collect eye contact data
@@ -170,6 +171,13 @@ class InterviewAnalysisService {
     console.log(`   Speaking Score: ${(cycleSummary.speakingScore * 100).toFixed(1)}%`);
     console.log(`   Eye Contact Rate: ${(cycleSummary.eyeContactRate * 100).toFixed(1)}%`);
     console.log(`   Overall Confidence: ${(cycleSummary.overallConfidence * 100).toFixed(1)}%`);
+    console.log(`   🗣️ Filler Words: ${cycleSummary.fillerWords.total} total`);
+    if (cycleSummary.fillerWords.total > 0) {
+      console.log(`      - Um: ${cycleSummary.fillerWords.breakdown.um}`);
+      console.log(`      - Uh: ${cycleSummary.fillerWords.breakdown.uh}`);
+      console.log(`      - Like: ${cycleSummary.fillerWords.breakdown.like}`);
+      console.log(`      - You Know: ${cycleSummary.fillerWords.breakdown.youKnow}`);
+    }
     
     // Start next cycle if still collecting
     if (this.isCollecting) {
@@ -200,9 +208,36 @@ class InterviewAnalysisService {
     const postureConfidence = cycleData.postureData.length > 0 ? 
       cycleData.postureData.reduce((sum, post) => sum + (post.confidence || 0), 0) / cycleData.postureData.length : 0;
     
-    // Calculate speaking score
-    const speakingScore = cycleData.speakingMetrics.length > 0 ? 
-      cycleData.speakingMetrics.reduce((sum, metric) => sum + (metric.score || 0), 0) / cycleData.speakingMetrics.length : 0;
+    // Calculate speaking score and filler words
+    let speakingScore = 0;
+    let totalFillerWords = 0;
+    let fillerWordBreakdown = {
+      um: 0,
+      uh: 0,
+      like: 0,
+      youKnow: 0
+    };
+    
+    if (cycleData.speakingMetrics.length > 0) {
+      speakingScore = cycleData.speakingMetrics.reduce((sum, metric) => sum + (metric.score || 0), 0) / cycleData.speakingMetrics.length;
+      
+      // Aggregate filler words from all speaking metrics in this cycle
+      cycleData.speakingMetrics.forEach(metric => {
+        console.log('🔍 Speaking metric:', JSON.stringify(metric, null, 2));
+        if (metric.fillerWords) {
+          console.log('🗣️ Found filler words:', metric.fillerWords);
+          totalFillerWords += (metric.fillerWords.umCount || 0) + (metric.fillerWords.uhCount || 0) + 
+                             (metric.fillerWords.likeCount || 0) + (metric.fillerWords.youKnowCount || 0);
+          
+          fillerWordBreakdown.um += (metric.fillerWords.umCount || 0);
+          fillerWordBreakdown.uh += (metric.fillerWords.uhCount || 0);
+          fillerWordBreakdown.like += (metric.fillerWords.likeCount || 0);
+          fillerWordBreakdown.youKnow += (metric.fillerWords.youKnowCount || 0);
+        } else {
+          console.log('❌ No filler words found in metric');
+        }
+      });
+    }
     
     // Calculate eye contact rate
     const eyeContactRate = cycleData.eyeContactData.length > 0 ? 
@@ -218,7 +253,11 @@ class InterviewAnalysisService {
       postureConfidence,
       speakingScore,
       eyeContactRate,
-      overallConfidence
+      overallConfidence,
+      fillerWords: {
+        total: totalFillerWords,
+        breakdown: fillerWordBreakdown
+      }
     };
   }
 
