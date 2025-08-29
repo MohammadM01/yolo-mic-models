@@ -209,7 +209,7 @@ const InterviewAnalysis = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h2 className="text-2xl font-semibold mb-4">Control Panel</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={startStreamsAndModels}
               disabled={webcamStream || isModelsRunning}
@@ -219,19 +219,15 @@ const InterviewAnalysis = () => {
             </button>
             
             <button
-              onClick={startDataCollection}
-              disabled={!isModelsRunning || isCollecting}
-              className="bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded transition-colors"
+              onClick={isCollecting ? stopDataCollection : startDataCollection}
+              disabled={!isModelsRunning}
+              className={`font-bold py-3 px-4 rounded transition-colors ${
+                isCollecting 
+                  ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                  : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+              } disabled:bg-gray-400 disabled:text-white`}
             >
-              🔄 Start Collection
-            </button>
-            
-            <button
-              onClick={stopDataCollection}
-              disabled={!isCollecting}
-              className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded transition-colors"
-            >
-              ⏹️ Stop Collection
+              {isCollecting ? '⏹️ Stop Collection' : '🔄 Start Collection'}
             </button>
           </div>
           
