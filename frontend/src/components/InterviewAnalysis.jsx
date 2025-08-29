@@ -96,6 +96,24 @@ const InterviewAnalysis = () => {
     }
   };
 
+  const startStreamsAndModels = async () => {
+    try {
+      setError(null);
+      
+      // First start the camera and microphone streams
+      await startStreams();
+      
+      // Wait a moment for streams to initialize
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Then start the models
+      await startModels();
+      
+    } catch (err) {
+      setError('Error starting streams and models: ' + err.message);
+    }
+  };
+
   const startDataCollection = async () => {
     try {
       setError(null);
@@ -191,21 +209,13 @@ const InterviewAnalysis = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h2 className="text-2xl font-semibold mb-4">Control Panel</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
-              onClick={startStreams}
-              disabled={webcamStream}
-              className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded transition-colors"
+              onClick={startStreamsAndModels}
+              disabled={webcamStream || isModelsRunning}
+              className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded transition-colors"
             >
-              📹 Start Camera & Mic
-            </button>
-            
-            <button
-              onClick={startModels}
-              disabled={!webcamStream || isModelsRunning}
-              className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold py-3 px-4 rounded transition-colors"
-            >
-              🚀 Start Models
+              🚀 Start Camera & Mic & Models
             </button>
             
             <button
