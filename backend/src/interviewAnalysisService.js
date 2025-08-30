@@ -254,6 +254,7 @@ class InterviewAnalysisService {
       speakingScore,
       eyeContactRate,
       overallConfidence,
+      speakingMetrics: cycleData.speakingMetrics.length > 0 ? cycleData.speakingMetrics[0] : null,
       fillerWords: {
         total: totalFillerWords,
         breakdown: fillerWordBreakdown
