@@ -6,7 +6,7 @@ class InterviewAnalysisService {
   constructor() {
     this.isRunning = false;
     this.isCollecting = false;
-    this.cycleDuration = 10000; // 10 seconds
+    this.cycleDuration = 5000; // 5 seconds
     this.cycleInterval = null;
     this.cycleCount = 0;
     this.cycleResults = [];
@@ -171,13 +171,7 @@ class InterviewAnalysisService {
     console.log(`   Speaking Score: ${(cycleSummary.speakingScore * 100).toFixed(1)}%`);
     console.log(`   Eye Contact Rate: ${(cycleSummary.eyeContactRate * 100).toFixed(1)}%`);
     console.log(`   Overall Confidence: ${(cycleSummary.overallConfidence * 100).toFixed(1)}%`);
-    console.log(`   🗣️ Filler Words: ${cycleSummary.fillerWords.total} total`);
-    if (cycleSummary.fillerWords.total > 0) {
-      console.log(`      - Um: ${cycleSummary.fillerWords.breakdown.um}`);
-      console.log(`      - Uh: ${cycleSummary.fillerWords.breakdown.uh}`);
-      console.log(`      - Like: ${cycleSummary.fillerWords.breakdown.like}`);
-      console.log(`      - You Know: ${cycleSummary.fillerWords.breakdown.youKnow}`);
-    }
+
     
     // Start next cycle if still collecting
     if (this.isCollecting) {
@@ -208,35 +202,13 @@ class InterviewAnalysisService {
     const postureConfidence = cycleData.postureData.length > 0 ? 
       cycleData.postureData.reduce((sum, post) => sum + (post.confidence || 0), 0) / cycleData.postureData.length : 0;
     
-    // Calculate speaking score and filler words
+    // Calculate speaking score
     let speakingScore = 0;
-    let totalFillerWords = 0;
-    let fillerWordBreakdown = {
-      um: 0,
-      uh: 0,
-      like: 0,
-      youKnow: 0
-    };
     
     if (cycleData.speakingMetrics.length > 0) {
       speakingScore = cycleData.speakingMetrics.reduce((sum, metric) => sum + (metric.score || 0), 0) / cycleData.speakingMetrics.length;
       
-      // Aggregate filler words from all speaking metrics in this cycle
-      cycleData.speakingMetrics.forEach(metric => {
-        console.log('🔍 Speaking metric:', JSON.stringify(metric, null, 2));
-        if (metric.fillerWords) {
-          console.log('🗣️ Found filler words:', metric.fillerWords);
-          totalFillerWords += (metric.fillerWords.umCount || 0) + (metric.fillerWords.uhCount || 0) + 
-                             (metric.fillerWords.likeCount || 0) + (metric.fillerWords.youKnowCount || 0);
-          
-          fillerWordBreakdown.um += (metric.fillerWords.umCount || 0);
-          fillerWordBreakdown.uh += (metric.fillerWords.uhCount || 0);
-          fillerWordBreakdown.like += (metric.fillerWords.likeCount || 0);
-          fillerWordBreakdown.youKnow += (metric.fillerWords.youKnowCount || 0);
-        } else {
-          console.log('❌ No filler words found in metric');
-        }
-      });
+
     }
     
     // Calculate eye contact rate
@@ -255,10 +227,7 @@ class InterviewAnalysisService {
       eyeContactRate,
       overallConfidence,
       speakingMetrics: cycleData.speakingMetrics.length > 0 ? cycleData.speakingMetrics[0] : null,
-      fillerWords: {
-        total: totalFillerWords,
-        breakdown: fillerWordBreakdown
-      }
+
     };
   }
 
@@ -332,11 +301,7 @@ class InterviewAnalysisService {
         rhythm: 0.5 + Math.random() * 0.5,
         pauses: 0.4 + Math.random() * 0.6
       },
-      fillerWords: {
-        umCount: Math.floor(Math.random() * 5),
-        uhCount: Math.floor(Math.random() * 3),
-        likeCount: Math.floor(Math.random() * 4)
-      },
+
       score: 0.5 + Math.random() * 0.5
     };
     

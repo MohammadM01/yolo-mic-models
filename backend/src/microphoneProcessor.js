@@ -74,12 +74,6 @@ class MicrophoneProcessor {
           pauses: this.generateRealisticPauses(),
           flow: this.generateRealisticFlow()
         },
-        fillerWords: {
-          umCount: this.generateRealisticFillerCount('um'),
-          uhCount: this.generateRealisticFillerCount('uh'),
-          likeCount: this.generateRealisticFillerCount('like'),
-          youKnowCount: this.generateRealisticFillerCount('you know')
-        },
         articulation: {
           pronunciation: this.generateRealisticPronunciation(),
           enunciation: this.generateRealisticEnunciation(),
@@ -101,17 +95,13 @@ class MicrophoneProcessor {
       const fluencyScore = (metrics.fluency.pace + metrics.fluency.rhythm + metrics.fluency.flow) / 3;
       const articulationScore = (metrics.articulation.pronunciation + metrics.articulation.enunciation + metrics.articulation.speed) / 3;
       
-      // Penalize for filler words
-      const fillerPenalty = Math.min(0.2, (metrics.fillerWords.umCount + metrics.fillerWords.uhCount + metrics.fillerWords.likeCount) * 0.02);
-      
       // Weighted scoring: tone (25%), strength (25%), hesitation (20%), fluency (15%), articulation (15%)
       metrics.score = Math.max(0, 
         (toneScore * 0.25) + 
         (strengthScore * 0.25) + 
         (hesitationScore * 0.20) + 
         (fluencyScore * 0.15) + 
-        (articulationScore * 0.15) - 
-        fillerPenalty
+        (articulationScore * 0.15)
       );
       
       // Store analysis result
@@ -123,7 +113,7 @@ class MicrophoneProcessor {
       return {
         tone: { pitch: 0.5, volume: 0.5, clarity: 0.5, stability: 0.5 },
         fluency: { pace: 0.5, rhythm: 0.5, pauses: 0.5, flow: 0.5 },
-        fillerWords: { umCount: 0, uhCount: 0, likeCount: 0, youKnowCount: 0 },
+
         articulation: { pronunciation: 0.5, enunciation: 0.5, speed: 0.5 },
         score: 0.5,
         timestamp: Date.now()
@@ -187,27 +177,7 @@ class MicrophoneProcessor {
     return Math.max(0, Math.min(1, baseFlow + variation));
   }
 
-  // Generate realistic filler word counts
-  generateRealisticFillerCount(type) {
-    // 80% chance of having no filler words (natural speech)
-    if (Math.random() < 0.8) {
-      return 0;
-    }
-    
-    // 20% chance of having some filler words
-    switch (type) {
-      case 'um':
-        return Math.floor(Math.random() * 2) + 1; // 1-2 ums (when present)
-      case 'uh':
-        return Math.floor(Math.random() * 2) + 1; // 1-2 uhs (when present)
-      case 'like':
-        return Math.floor(Math.random() * 2) + 1; // 1-2 likes (when present)
-      case 'you know':
-        return Math.floor(Math.random() * 2) + 1; // 1-2 you knows (when present)
-      default:
-        return 0;
-    }
-  }
+
 
   // Generate realistic pronunciation scores
   generateRealisticPronunciation() {
@@ -406,8 +376,7 @@ class MicrophoneProcessor {
     const avgArticulation = recentResults.reduce((sum, result) => 
       sum + (result.articulation.pronunciation + result.articulation.enunciation + result.articulation.speed) / 3, 0) / recentResults.length;
 
-    const totalFillers = recentResults.reduce((sum, result) => 
-      sum + result.fillerWords.umCount + result.fillerWords.uhCount + result.fillerWords.likeCount, 0);
+
 
     // Get most common hesitation types
     const hesitationTypes = {};
@@ -432,7 +401,7 @@ class MicrophoneProcessor {
       averageHesitation: avgHesitation,
       averageFluency: avgFluency,
       averageArticulation: avgArticulation,
-      totalFillerWords: totalFillers,
+
       mostCommonHesitationTypes: hesitationTypes,
       mostCommonHesitationContexts: hesitationContexts,
       samplesAnalyzed: this.analysisResults.length,
